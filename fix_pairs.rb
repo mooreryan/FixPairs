@@ -60,8 +60,12 @@ def index_fastq fname
   name_id = ""
   header_offset = 0 # with the @
 
+  n = 0
+
   File.open(fname, "rt") do |f|
     f.each_line do |line|
+      n+=1; STDERR.printf("Reading -- %d\r", n) if (n % 10000).zero?
+
       case count
       when 0 # header
         name_id = line.chomp.split(" ")[0][1..-1]
@@ -81,6 +85,8 @@ def index_fastq fname
       count += 1
     end
   end
+
+  AbortIf.logger.debug { "Num seqs in '#{fname}': #{index.count}" }
 
   index
 end
@@ -158,8 +164,14 @@ Time.time_it "Finding paired IDs" do
   rev_keys = Set.new rev_idx.keys
 
   paired_keys = for_keys.intersection rev_keys
+
+
   for_unpaired_keys = for_keys - paired_keys
   rev_unpaired_keys = rev_keys - paired_keys
+
+  AbortIf.logger.debug { "Num paired keys: #{paired_keys.count}" }
+  AbortIf.logger.debug { "Num for only keys: #{for_unpaired_keys.count}" }
+  AbortIf.logger.debug { "Num rev only keys: #{rev_unpaired_keys.count}" }
 end
 
 begin
@@ -169,7 +181,10 @@ begin
   Time.time_it "Writing paired reads" do
     File.open(for_outf, "w") do |foutf|
       File.open(rev_outf, "w") do |routf|
+        n = 0
         paired_keys.each do |key|
+          n+=1; STDERR.printf("Reading -- %d\r", n) if (n % 10000).zero?
+
           for_idx_ary = for_idx[key]
           rev_idx_ary = rev_idx[key]
 
@@ -182,13 +197,19 @@ begin
 
   Time.time_it "Writing un-paired reads" do
     File.open(un_outf, "w") do |f|
+      n = 0
       for_unpaired_keys.each do |key|
+        n+=1; STDERR.printf("Reading -- %d\r", n) if (n % 10000).zero?
+
         for_idx_ary = for_idx[key]
 
         f.puts read_record forf, for_idx_ary
       end
 
+      n = 0
       rev_unpaired_keys.each do |key|
+        n+=1; STDERR.printf("Reading -- %d\r", n) if (n % 10000).zero?
+
         rev_idx_ary = rev_idx[key]
 
         f.puts read_record revf, rev_idx_ary

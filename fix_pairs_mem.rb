@@ -69,6 +69,7 @@ ParseFasta::SeqFile.open(forward).each_record do |rec|
 
   for_recs[id] = rec
 end
+STDERR.puts
 
 paired_ids = []
 
@@ -91,6 +92,7 @@ begin
       un_outf.puts rec
     end
   end
+  STDERR.puts
 
   for_unpaired = for_recs.keys - paired_ids
 
@@ -100,6 +102,7 @@ begin
 
     un_outf.puts for_recs[id]
   end
+  STDERR.puts
 
   AbortIf.logger.info { "Surviving forward seqs: '#{for_outf.path}'" }
   AbortIf.logger.info { "Surviving reverse seqs: '#{rev_outf.path}'" }

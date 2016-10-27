@@ -60,11 +60,9 @@ def index_fastq fname
   name_id = ""
   header_offset = 0 # with the @
 
-  n = 0
-
   File.open(fname, "rt") do |f|
     f.each_line do |line|
-      n+=1; STDERR.printf("Reading -- %d\r", n) if (n % 10000).zero?
+      STDERR.printf("Reading -- %d\r", n) if (seq_num % 10000).zero?
 
       case count
       when 0 # header

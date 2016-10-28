@@ -15,7 +15,7 @@
 // along with this program.  If not, see
 // <http://www.gnu.org/licenses/>.
 
-// Compile with g++ -g -Wall --std=c++11 test.cc -o test
+// Compile with g++ -g -Wall --std=c++11 fix_pairs.cc -o FixPairs
 
 #include <fstream>
 #include <iostream>
@@ -67,12 +67,12 @@ int main(int argc, char *argv[])
 {
 
   if (argc != 4) {
-    std::cerr << "USAGE: "
+    std::cerr << "VERSION: v0.1.0\nUSAGE: "
               << argv[0]
               << " reads.1.fq reads.2.fq outfile_basename"
               << std::endl;
 
-    return 1;
+    exit(1);
   }
 
   int lineno = -1;

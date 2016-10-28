@@ -60,6 +60,16 @@ Total reads accounted for: 4654976
 ------------------------------------------------------------
 ```
 
+### Zipped input files
+
+FixPairs doesn't unzip files itself, but you can use some cute bash subshells to pass in zipped files without unzipping them first.
+
+```bash
+FixPairs <(gzip -cd seqs.1.fq.gz) <(gzip -cd seqs.2.fq.gz) seqs.repaired
+```
+
+This should work with whatever compression program you used.
+
 ## Some Details
 
 ### Read pairing
